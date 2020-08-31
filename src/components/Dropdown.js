@@ -6,15 +6,20 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
     const ref = useRef();
 
     useEffect(() => {
-        document.body.addEventListener('click', (event) => {
+        const onBodyClick = (event) => {
             // If clicked on Dropdown component, do nothing
             if (ref.current.contains(event.target)) {
                 return;
             }
-
-            // For other DOM elements, close dropdown
+            // For clicking on other DOM elements, close dropdown
             setOpen(false);
-        });
+        };
+        document.body.addEventListener('click', onBodyClick);
+
+        // cleanup eventListener from component when removed from DOM
+        return() => {
+            document.body.removeEventListener('click', onBodyClick);
+        };
     }, []); // Emty list arg to run only once
 
     const renderedOptions = options.map((option) => {
